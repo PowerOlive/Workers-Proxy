@@ -1,4 +1,4 @@
-const isMobile = (userAgent: string): boolean => {
+export const isMobile = (userAgent: string): boolean => {
   const toMatch = [
     /Android/i,
     /webOS/i,
@@ -12,14 +12,16 @@ const isMobile = (userAgent: string): boolean => {
   return toMatch.some((toMatchItem) => userAgent.match(toMatchItem));
 };
 
-const createResponse = (
+export const createResponse = (
   body: string,
   status: number,
 ): Response => new Response(body, {
   status,
 });
 
-export {
-  isMobile,
-  createResponse,
+export const getHostname = (
+  request: Request,
+): string => {
+  const url = new URL(request.url);
+  return url.host;
 };

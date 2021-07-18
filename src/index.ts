@@ -1,43 +1,53 @@
-import { selectUpstream } from './load-balancer';
-import { getFirewallResponse } from './firewall';
-import { getUpstreamResponse } from './upstream';
-import { getCORSResponse } from './cors';
-import { Configuration } from './types';
+import { useValidate } from './validate';
+import { useFirewall } from './firewall';
+import { useRequestHeaders, useResponseHeaders } from './headers';
+import { useSelectUpstream } from './load-balancing';
+import { useWebSocket } from './websocket';
+import { useUpstream } from './upstream';
+import { useCustomError } from './custom-error';
+import { useCORS } from './cors';
 
-class RocketBooster {
-  config: Configuration;
+import { createResponse, getHostname } from './utils';
+import { usePipeline } from './middleware';
 
-  constructor(config: Configuration) {
-    this.config = config;
-  }
+import { Proxy, Configuration } from '../types/index';
+import { Context } from '../types/middleware';
 
-  async apply(request: Request): Promise<Response | null> {
-    const firewallResponse = getFirewallResponse(
+export default function useProxy(
+  options: Configuration,
+): Proxy {
+  const pipeline = usePipeline(
+    useValidate,
+    useFirewall,
+    useRequestHeaders,
+    useSelectUpstream,
+    useUpstream,
+    useWebSocket,
+    useCustomError,
+    useCORS,
+    useResponseHeaders,
+  );
+
+  const apply = async (request: Request): Promise<Response> => {
+    const context: Context = {
+      options,
       request,
-      this.config.firewall,
-    );
-    if (firewallResponse instanceof Response) {
-      return firewallResponse;
+      hostname: getHostname(request),
+      response: new Response('Unhandled response'),
+      upstream: null,
+    };
+    try {
+      await pipeline.execute(context);
+    } catch (error) {
+      context.response = createResponse(
+        error,
+        500,
+      );
     }
+    return context.response;
+  };
 
-    const upstream = selectUpstream(
-      this.config.upstream,
-      this.config.network,
-    );
-    const upstreamResponse = await getUpstreamResponse(
-      request,
-      upstream,
-      this.config.optimization,
-    );
-
-    const corsResponse = getCORSResponse(
-      request,
-      upstreamResponse,
-      this.config.cors,
-    );
-
-    return corsResponse;
-  }
+  return {
+    apply,
+  };
 }
-
-export default RocketBooster;

@@ -1,45 +1,49 @@
 {
   "name": "rocket-booster",
-  "version": "1.0.0",
+  "version": "1.2.1",
   "description": "The edge-rendered speed booster for web applications, storage platforms, and RESTful APIs.",
   "main": "dist/index.js",
   "types": "dist/index.d.js",
   "scripts": {
-    "test": "jest --coverage",
-    "lint": "eslint --fix src/* --ext .ts",
-    "build": "webpack"
+    "test": "jest",
+    "lint": "eslint --fix --ext .ts",
+    "build": "webpack",
+    "prepack": "npm run lint && npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rocket-booster/rocket-booster.git"
+    "url": "git+https://github.com/booster-labs/rocket-booster.git"
   },
   "keywords": [
     "serverless",
     "proxy",
     "workers",
-    "cloudflare"
+    "cloudflare",
+    "reverse-proxy"
   ],
   "author": "Xiaoyang Liu",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rocket-booster/rocket-booster/issues"
+    "url": "https://github.com/booster-labs/rocket-booster/issues"
   },
   "homepage": "https://booster.js.org",
   "devDependencies": {
     "@cloudflare/workers-types": "^2.2.2",
-    "@types/jest": "^26.0.23",
-    "@typescript-eslint/eslint-plugin": "^4.25.0",
-    "@typescript-eslint/parser": "^4.25.0",
-    "clean-webpack-plugin": "*",
-    "eslint": "^7.27.0",
+    "@types/jest": "^26.0.24",
+    "@types/service-worker-mock": "^2.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.28.2",
+    "@typescript-eslint/parser": "^4.28.3",
+    "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "eslint": "^7.30.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.23.3",
+    "eslint-plugin-import": "^2.23.4",
     "eslint-webpack-plugin": "^2.5.4",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.5.6",
-    "ts-loader": "^9.2.2",
-    "typescript": "^4.2.4",
-    "webpack": "^5.37.1",
-    "webpack-cli": "^4.7.0"
+    "jest": "^27.0.6",
+    "service-worker-mock": "^2.0.5",
+    "ts-jest": "^27.0.3",
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.3.5",
+    "webpack": "^5.44.0",
+    "webpack-cli": "^4.7.2"
   }
 }

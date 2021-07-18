@@ -1,13 +1,17 @@
-import { isMobile, createResponse } from '../src/utils';
+import {
+  isMobile,
+  createResponse,
+  getHostname,
+} from '../src/utils';
 
-test('utils.ts -> createResponse()', () => {
+test('utils.ts -> createResponse()', async () => {
   const response = createResponse(
     'Test response body',
     403,
   );
   expect(response.status).toEqual(403);
   expect(response.ok).toEqual(false);
-  expect(response.body).toEqual('Test response body');
+  await expect(response.text()).resolves.toEqual('Test response body');
 });
 
 test('utils.ts -> isMobile()', () => {
@@ -40,4 +44,11 @@ test('utils.ts -> isMobile()', () => {
   userAgents.forEach(([userAgent, result]) => {
     expect(isMobile(userAgent)).toEqual(result);
   });
+});
+
+test('utils.ts -> getHostname()', () => {
+  const url = 'https://developer.mozilla.org:443/en-US/docs/';
+  const request = new Request(url);
+  const hostname = getHostname(request);
+  expect(hostname).toEqual('developer.mozilla.org');
 });
